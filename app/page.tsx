@@ -1,8 +1,11 @@
-import Image from "next/image";
 import styles from "./page.module.css";
 import Greeting from "./Greeting";
+import { callTransmissionRpc } from "@/utils/api";
 
-export default function Home() {
+export default async function HomePage() {
+  const result = await callTransmissionRpc("session-get", {});
+  console.log("xxx", result);
+
   return (
     <main className={styles.main}>
       <Greeting />
@@ -18,27 +21,8 @@ export default function Home() {
             rel="noopener noreferrer"
           >
             By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
           </a>
         </div>
-      </div>
-
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
       </div>
 
       <div className={styles.grid}>
