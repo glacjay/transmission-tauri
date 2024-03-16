@@ -4,10 +4,11 @@ export async function callTransmissionRpc(
   method: string,
   args: Record<string, any>
 ) {
-  const response = await fetch("http://127.0.0.1:9091/transmission/rpc", {
+  const response = await fetch("http://192.168.50.33:9091/transmission/rpc", {
     method: "POST",
     headers: {
       Accept: "application/json",
+      Authorization: `Basic ${btoa("username:password")}`,
       "X-Transmission-Session-Id": xTransmissionSessionId,
     },
     body: JSON.stringify({ method, arguments: args }),
@@ -17,5 +18,7 @@ export async function callTransmissionRpc(
       response.headers.get("X-Transmission-Session-Id") ?? "";
     return callTransmissionRpc(method, args);
   }
-  return await response.json();
+  const text = await response.text();
+  console.log("POST", method, args, text);
+  return JSON.parse(text);
 }
