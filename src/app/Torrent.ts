@@ -6,6 +6,7 @@ export type Torrent = {
   status: number;
   downloadDir: string;
   files: { name: string }[];
+  rateDownload: number;
 };
 
 export enum TorrentStatus {

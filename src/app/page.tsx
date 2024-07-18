@@ -13,11 +13,26 @@ import { RevealingButton } from "./RevealingButton";
 import useSWR from "swr";
 import { useMemo } from "react";
 
+class LocalStore {
+  selectedTorrentId: number | null = null;
+}
+
 export default function Page() {
   const { data, error } = useSWR(
     [
       "torrent-get",
-      { fields: ["id", "name", "addedDate", "percentDone", "status", "downloadDir", "files"] },
+      {
+        fields: [
+          "id",
+          "name",
+          "addedDate",
+          "percentDone",
+          "status",
+          "downloadDir",
+          "files",
+          "rateDownload",
+        ],
+      },
     ],
     ([url, args]) => callTransmissionRpc(url, args),
     { refreshInterval: 2000 },
@@ -49,7 +64,7 @@ function TorrentItem({ torrent, index }: { torrent: Torrent; index: number }) {
     >
       <TorrentStatus status={torrent.status} />
 
-      <div className="flex-column" style={{ flex: 1 }}>
+      <div className="flex-column" style={{ flex: 1, overflowX: "hidden" }}>
         <div>{torrent.name}</div>
         <div style={{ height: 16, border: "1px solid lightgray" }}>
           <div
@@ -60,11 +75,13 @@ function TorrentItem({ torrent, index }: { torrent: Torrent; index: number }) {
             }}
           ></div>
         </div>
+        <div>download rate: {torrent.rateDownload}</div>
         <div>files count: {torrent.files.length}</div>
         <div>
           path: {torrent.downloadDir}/{torrent.files[0]?.name.replace(/\/.*/, "")}
         </div>
       </div>
+
       <RevealingButton
         path={`${torrent.downloadDir}/${torrent.files[0]?.name.replace(/\/.*/, "")}`}
       />
